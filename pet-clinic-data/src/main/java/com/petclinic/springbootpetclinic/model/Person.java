@@ -1,5 +1,7 @@
 package com.petclinic.springbootpetclinic.model;
 
+import services.map.AbstractMapService;
+
 public class Person extends BaseEntity {
     private String firstName;
     private String lastName;
