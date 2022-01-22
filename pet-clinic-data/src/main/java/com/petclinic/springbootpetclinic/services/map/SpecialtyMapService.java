@@ -1,7 +1,7 @@
 package com.petclinic.springbootpetclinic.services.map;
 
 import com.petclinic.springbootpetclinic.model.Speciality;
-import com.petclinic.springbootpetclinic.services.SpecialtiesService;
+import com.petclinic.springbootpetclinic.services.SpecialtyService;
 import org.springframework.stereotype.Service;
 
 import java.util.Set;
@@ -9,7 +9,7 @@ import java.util.Set;
 @Service
 public class SpecialtyMapService
         extends AbstractMapService<Speciality, Long>
-        implements SpecialtiesService {
+        implements SpecialtyService {
     @Override
     public Set<Speciality> findAll() {
         return super.findAll();
