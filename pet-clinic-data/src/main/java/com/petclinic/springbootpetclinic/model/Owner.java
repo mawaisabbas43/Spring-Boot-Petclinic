@@ -1,13 +1,23 @@
 package com.petclinic.springbootpetclinic.model;
 
+import lombok.Getter;
+import lombok.Setter;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import java.util.HashSet;
 import java.util.Set;
 
+@Entity
+@Table(name = "owners")//optional by default it will be same
 public class Owner extends Person{
     private String address;
     private String city;
     private String telephone;
-    private Set<Pet> pets=new HashSet<>();
+    @OneToMany(mappedBy = "owner", cascade = CascadeType.ALL)
+    private Set<Pet> pets = new java.util.LinkedHashSet<>();
 
     public String getAddress() {
         return address;
