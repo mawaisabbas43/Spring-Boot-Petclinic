@@ -1,10 +1,7 @@
 package com.petclinic.springbootpetclinic.bootstrap;
 
 import com.petclinic.springbootpetclinic.model.*;
-import com.petclinic.springbootpetclinic.services.OwnerService;
-import com.petclinic.springbootpetclinic.services.PetTypeService;
-import com.petclinic.springbootpetclinic.services.SpecialtyService;
-import com.petclinic.springbootpetclinic.services.VetService;
+import com.petclinic.springbootpetclinic.services.*;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
 
@@ -12,96 +9,108 @@ import java.time.LocalDate;
 
 @Component
 public class DataLoader implements CommandLineRunner {
+
     private final OwnerService ownerService;
     private final VetService vetService;
     private final PetTypeService petTypeService;
     private final SpecialtyService specialtyService;
+    private final VisitService visitService;
 
-    public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService, SpecialtyService specialtyService) {
+    public DataLoader(OwnerService ownerService, VetService vetService, PetTypeService petTypeService,
+                      SpecialtyService specialtyService, VisitService visitService) {
         this.ownerService = ownerService;
         this.vetService = vetService;
         this.petTypeService = petTypeService;
         this.specialtyService = specialtyService;
+        this.visitService = visitService;
     }
 
     @Override
     public void run(String... args) throws Exception {
-        int size = petTypeService.findAll().size();
-        if(size==0) {
+
+        int count = petTypeService.findAll().size();
+
+        if (count == 0 ){
             loadData();
         }
     }
 
     private void loadData() {
-        PetType dog=new PetType();
+        PetType dog = new PetType();
         dog.setName("Dog");
-        PetType savedDog=petTypeService.save(dog);
+        PetType savedDogPetType = petTypeService.save(dog);
 
-        PetType cat=new PetType();
+        PetType cat = new PetType();
         cat.setName("Cat");
-        PetType savedCat=petTypeService.save(cat);
+        PetType savedCatPetType = petTypeService.save(cat);
+
+        Speciality radiology = new Speciality();
+        radiology.setDescription("Radiology");
+        Speciality savedRadiology = specialtyService.save(radiology);
+
+        Speciality surgery = new Speciality();
+        surgery.setDescription("Surgery");
+        Speciality savedSurgery = specialtyService.save(surgery);
+
+        Speciality dentistry = new Speciality();
+        dentistry.setDescription("dentistry");
+        Speciality savedDentistry = specialtyService.save(dentistry);
 
         Owner owner1 = new Owner();
         owner1.setFirstName("Michael");
         owner1.setLastName("Weston");
-        owner1.setAddress("Johar Town Lahore");
-        owner1.setCity("Lahore");
-        owner1.setTelephone("+9212035680");
+        owner1.setAddress("123 Brickerel");
+        owner1.setCity("Miami");
+        owner1.setTelephone("1231231234");
 
-        Pet pet1=new Pet();
-        pet1.setPetType(savedDog);
-        pet1.setBirthDate(LocalDate.now());
-        pet1.setName("Tomy");
-        pet1.setOwner(owner1);
-        owner1.getPets().add(pet1);
+        Pet mikesPet = new Pet();
+        mikesPet.setPetType(savedDogPetType);
+        mikesPet.setOwner(owner1);
+        mikesPet.setBirthDate(LocalDate.now());
+        mikesPet.setName("Rosco");
+        owner1.getPets().add(mikesPet);
 
         ownerService.save(owner1);
 
         Owner owner2 = new Owner();
         owner2.setFirstName("Fiona");
         owner2.setLastName("Glenanne");
-        owner2.setAddress("Johar Town Lahore");
-        owner2.setCity("Lahore");
-        owner2.setTelephone("+9212035680");
+        owner2.setAddress("123 Brickerel");
+        owner2.setCity("Miami");
+        owner2.setTelephone("1231231234");
 
-        Pet fionasCat=new Pet();
-        fionasCat.setPetType(savedCat);
-        fionasCat.setBirthDate(LocalDate.now());
-        fionasCat.setName("Tom");
+        Pet fionasCat = new Pet();
+        fionasCat.setName("Just Cat");
         fionasCat.setOwner(owner2);
+        fionasCat.setBirthDate(LocalDate.now());
+        fionasCat.setPetType(savedCatPetType);
         owner2.getPets().add(fionasCat);
 
         ownerService.save(owner2);
+
+        Visit catVisit = new Visit();
+        catVisit.setPet(fionasCat);
+        catVisit.setDate(LocalDate.now());
+        catVisit.setDescription("Sneezy Kitty");
+
+        visitService.save(catVisit);
+
         System.out.println("Loaded Owners....");
-
-        Speciality radiology=new Speciality();
-        radiology.setDescription("radiology");
-        specialtyService.save(radiology);
-
-        Speciality surgery=new Speciality();
-        surgery.setDescription("surgery");
-        specialtyService.save(surgery);
-
-        Speciality dentistry=new Speciality();
-        dentistry.setDescription("dentistry");
-        specialtyService.save(dentistry);
 
         Vet vet1 = new Vet();
         vet1.setFirstName("Sam");
         vet1.setLastName("Axe");
-        vet1.getSpecialities().add(radiology);
-        vet1.getSpecialities().add(surgery);
+        vet1.getSpecialities().add(savedRadiology);
 
         vetService.save(vet1);
 
         Vet vet2 = new Vet();
         vet2.setFirstName("Jessie");
         vet2.setLastName("Porter");
-        vet2.getSpecialities().add(radiology);
-        vet2.getSpecialities().add(dentistry);
-        vet2.getSpecialities().add(surgery);
+        vet2.getSpecialities().add(savedSurgery);
 
         vetService.save(vet2);
+
         System.out.println("Loaded Vets....");
     }
 }
